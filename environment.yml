@@ -24,8 +24,8 @@ dependencies:
 - dvc
 - mlflow
 - dagshub
-- pytorch
-- torchvision  # [not osx]
+- pytorch-nightly::torchvision
+- pytorch-nightly::pytorch
 - lightning
 - pip:
   - tensorflow-macos  # [osx]
