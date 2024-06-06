@@ -22,9 +22,8 @@ dependencies:
 - onnxruntime
 - skl2onnx
 - dvc
-- mlflow
-- pytorch-nightly::torchvision
 - pytorch-nightly::pytorch
+- torchvision
 - lightning
 - ipywidgets
 - pip:
@@ -32,4 +31,5 @@ dependencies:
   - tensorflow-metal  # [osx-arm64]
   - tf2onnx
   - dagshub
+  - mlflow
 - apple::tensorflow-deps  #[osx]
