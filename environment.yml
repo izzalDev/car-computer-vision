@@ -1,0 +1,34 @@
+channels:
+- defaults
+- apple
+- conda-forge
+- pytorch-nightly
+- pip
+dependencies:
+- python=3.10
+- numpy
+- pandas
+- scikit-learn  # [not osx]
+- matplotlib
+- seaborn
+- opencv
+- pillow
+- scikit-image
+- conda-forge::nb_conda_kernels
+- seaborn
+- tensorflow  # [not osx]
+- pip
+- skl2onnx
+- onnxruntime
+- skl2onnx
+- dvc
+- mlflow
+- dagshub
+- pytorch
+- torchvision  # [not osx]
+- lightning
+- pip:
+  - tensorflow-macos  # [osx]
+  - tensorflow-metal  # [osx-arm64]
+  - tf2onnx
+- apple::tensorflow-deps  #[osx]
