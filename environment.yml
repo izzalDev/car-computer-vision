@@ -8,7 +8,7 @@ dependencies:
 - python=3.10
 - numpy
 - pandas
-- scikit-learn  # [not osx]
+- scikit-learn
 - matplotlib
 - seaborn
 - opencv
@@ -23,12 +23,13 @@ dependencies:
 - skl2onnx
 - dvc
 - mlflow
-- dagshub
 - pytorch-nightly::torchvision
 - pytorch-nightly::pytorch
 - lightning
+- ipywidgets
 - pip:
   - tensorflow-macos  # [osx]
   - tensorflow-metal  # [osx-arm64]
   - tf2onnx
+  - dagshub
 - apple::tensorflow-deps  #[osx]
