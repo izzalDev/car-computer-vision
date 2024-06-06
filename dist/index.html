@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image to ONNX Model Inference</title>
+    <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@latest/dist/ort.min.js"></script>
+</head>
+<body>
+    <img id="image"><br>
+    <input type="file" id="input" disabled/>
+    <button id="button" disabled>Predict</button><br>
+    <div id="output">
+        <p>Label: </p>
+        <p>Probability: </p>
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const inputFile = document.getElementById('input');
+            const button = document.getElementById('button');
+            const canvas = document.getElementById('canvas');
+            const outputDiv = document.getElementById('output');
+            const image = document.getElementById('image');
+        
+            const session = await ort.InferenceSession.create('./model.onnx');
+            inputFile.disabled = false;
+        
+            button.onclick = async () => {
+                const result = cv.imread(image);
+                cv.resize(result, result, new cv.Size(16, 16));
+                cv.cvtColor(result, result, cv.COLOR_BGR2HSV);
+                const inputTensor = new ort.Tensor('float32', Float32Array.from(result.data), [1, 768]);
+                const {label, probabilities} = await session.run({X: inputTensor});
+                outputDiv.innerHTML = `<p>Label: ${label.data}</p><p>Probability: ${Math.max(...probabilities.data)}</p>`;
+            };
+
+            inputFile.onchange = () => {
+                button.disabled = !inputFile.files[0];
+                image.src = URL.createObjectURL(inputFile.files[0]);
+                outputDiv.innerHTML = `<p>Label: </p><p>Probability: </p>`;
+            };
+        });
+    </script>
+</body>
+</html>
