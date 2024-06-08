@@ -2,7 +2,7 @@ channels:
 - defaults
 - apple
 - conda-forge
-- pytorch-nightly
+- pytorch
 - pip
 dependencies:
 - python=3.10
@@ -14,7 +14,7 @@ dependencies:
 - opencv
 - pillow
 - scikit-image
-- conda-forge::nb_conda_kernels
+- ipykernel
 - seaborn
 - tensorflow  # [not osx]
 - pip
@@ -22,14 +22,17 @@ dependencies:
 - onnxruntime
 - skl2onnx
 - dvc
-- pytorch-nightly::pytorch
-- torchvision
+- pytorch::pytorch
+- pytorch::torchvision
 - lightning
 - ipywidgets
+- nbconvert
 - pip:
   - tensorflow-macos  # [osx]
   - tensorflow-metal  # [osx-arm64]
   - tf2onnx
   - dagshub
   - mlflow
-- apple::tensorflow-deps  #[osx]
+  - xgboost
+  - jcopml
+- apple::tensorflow-deps  # [osx]
