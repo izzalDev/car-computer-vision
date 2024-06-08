@@ -1,46 +1,99 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image to ONNX Model Inference</title>
+    <title>Sample Deployment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://docs.opencv.org/4.7.0/opencv.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@latest/dist/ort.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #6ae792;
+            animation: spin 1s linear infinite;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
 </head>
-<body>
-    <img id="image"><br>
-    <input type="file" id="input" disabled/>
-    <button id="button" disabled>Predict</button><br>
-    <div id="output">
-        <p>Label: </p>
-        <p>Probability: </p>
+
+<body class="bg-gray-100 p-8">
+    <div class="max-w-lg mx-auto bg-white rounded overflow-hidden shadow-lg mb-8">
+        <img id="previewImage" class="w-full h-full object-cover object-center" src="https://via.placeholder.com/500x300" alt="Sample Image">
+        <div class="p-6">
+            <div class="flex justify-between items-center">
+                <label for="fileInput" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">Pilih File</label>
+                <input id="fileInput" type="file" class="hidden">
+                <button id="predictBtn" class="flex bg-green-300 px-4 py-2 rounded-md cursor-not-allowed text-white" disabled>
+                    <div id="spinner" class="mr-2">
+                        <div class="spinner"></div>
+                    </div>
+                    Loading Model
+                </button>
+            </div>
+            <div id="predictionResult" class="mt-4 text-center text-xl"></div>
+        </div>
     </div>
     <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const inputFile = document.getElementById('input');
-            const button = document.getElementById('button');
-            const canvas = document.getElementById('canvas');
-            const outputDiv = document.getElementById('output');
-            const image = document.getElementById('image');
-        
-            const session = await ort.InferenceSession.create('https://dagshub.com/izzalDev/car-computer-vision.mlflow/get-artifact?path=model%2Fmodel.onnx&run_uuid=8f1f8ec4e1a441a3b983703d7126fe13');
-            inputFile.disabled = false;
-        
-            button.onclick = async () => {
-                const result = cv.imread(image);
-                cv.resize(result, result, new cv.Size(32, 35));
-                cv.cvtColor(result, result, cv.COLOR_BGR2HSV);
-                const inputTensor = new ort.Tensor('float32', Float32Array.from(result.data), [1, 3360]);
-                const {label, probabilities} = await session.run({X: inputTensor});
-                outputDiv.innerHTML = `<p>Label: ${label.data}</p><p>Probability: ${Math.max(...probabilities.data)}</p>`;
-            };
+        $(document).ready(function () {
+            const image = new Image();
+            $('#fileInput').change(function () {
+                $('#predictBtn').prop('disabled', false);
+                readURL(this);
+                $('#predictionResult').html('');
+                image.src = URL.createObjectURL(this.files[0]);
+            });
 
-            inputFile.onchange = () => {
-                button.disabled = !inputFile.files[0];
-                image.src = URL.createObjectURL(inputFile.files[0]);
-                outputDiv.innerHTML = `<p>Label: </p><p>Probability: </p>`;
-            };
+            $('#predictBtn').click(function () {
+                $(this).prop('disabled', true);
+                $('#spinner').removeClass('hidden');
+                setTimeout(function () {
+                    $('#spinner').addClass('hidden');
+                    $('#predictBtn').prop('disabled', false);
+                }, 3000); // Adjust this time according to your model loading time
+            });
+
+            function readURL(input) {
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#previewImage').attr('src', e.target.result);
+                    }
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+
+            const class_names = {0: "Citycar", 1: "Sedan", 2: "Sport", 3: "Van"};
+            const session = ort.InferenceSession.create('https://dagshub.com/izzalDev/car-computer-vision.mlflow/get-artifact?path=model%2Fmodel.onnx&run_uuid=8f1f8ec4e1a441a3b983703d7126fe13').then(session => {
+                $('#spinner').addClass('hidden');
+                $('#predictBtn').prop('disabled', false);
+                $('#predictBtn').removeClass('cursor-not-allowed');
+                $('#predictBtn').removeClass('bg-green-300');
+                $('#predictBtn').addClass('bg-green-500');
+                $('#predictBtn').text('Predict');
+                $('#predictBtn').click(async() => {
+                    const result = cv.imread(image);
+                    cv.resize(result, result, new cv.Size(35, 32));
+                    cv.cvtColor(result, result, cv.COLOR_RGBA2BGR);
+                    const inputTensor = new ort.Tensor('float32', Float32Array.from(result.data), [1, 3360]);
+                    const {label, probabilities} = await session.run({X: inputTensor});
+                    $('#predictionResult').html(`${class_names[label.data]} ${Math.max(...probabilities.data)*100}%</p>`);
+                });
+            });
         });
     </script>
 </body>
+
 </html>
