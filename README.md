@@ -43,4 +43,11 @@ Proyek ini menunjukkan bagaimana cara klasifikasi menggunakan `scikit-learn` dan
 
 ## Penggunaan
 
-Setelah Anda menyelesaikan langkah-langkah instalasi, Anda dapat mulai menggunakan dan memodifikasi notebook yang sudah ada.
+Setelah Anda menyelesaikan langkah-langkah instalasi, Anda dapat mulai menggunakan dan memodifikasi notebook yang sudah ada. 
+
+## Dukungan
+
+<div style="display: flex; justify-content: center; align-items: center;">
+    <a href="https://www.nihbuatjajan.com/_qviyxykh" target="_blank"><img src="https://d4xyvrfd64gfm.cloudfront.net/buttons/default-cta.png" alt="Nih buat jajan" style="height: 40px !important; padding: 10px;" ></a>
+    <a href="https://trakteer.id/izzalDev/tip" target="_blank"><img id="wse-buttons-preview" src="https://cdn.trakteer.id/images/embed/trbtn-red-1.png?date=18-11-2023" height="40" style="border:0px;height:40px; padding: 10px;" alt="Trakteer Saya"></a>
+</div>
